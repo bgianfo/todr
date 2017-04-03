@@ -10,6 +10,7 @@ mod repl;
 mod handlers;
 mod types;
 mod render;
+mod completer;
 
 fn main() {
     let mut repl = repl::TodrRepl::new();

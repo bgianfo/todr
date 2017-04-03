@@ -7,6 +7,7 @@ use rustyline::Editor;
 
 // Use our internal handlers module.
 use handlers;
+use completer::CommandCompleter;
 
 // On unix platforms you can use ANSI escape sequences
 #[cfg(unix)]
@@ -16,12 +17,14 @@ static PROMPT: &'static str = "\x1b[1;32m>>\x1b[0m ";
 // of the box
 #[cfg(windows)]
 static PROMPT: &'static str = ">> ";
+
+// The default history file name.
 static DEFAULT_HISTORY_FILE: &'static str = ".todr_history";
 
 #[derive(Debug)]
 pub struct TodrRepl {
     /// The repl's readline editor.
-    readline_editor: Editor<()>,
+    readline_editor: Editor<CommandCompleter>,
 
     // The configured history file.
     history_file: String,
@@ -38,9 +41,15 @@ impl TodrRepl {
             .join(DEFAULT_HISTORY_FILE)
             .to_string_lossy()
             .to_string();
+
+        let mut editor = Editor::<CommandCompleter>::new();
+
+        let completer = CommandCompleter::new();
+        editor.set_completer(Some(completer));
+
         TodrRepl {
             // `()` can be used when no completer is required
-            readline_editor: Editor::<()>::new(),
+            readline_editor: editor,
             history_file: history_file,
             should_exit: false,
         }
