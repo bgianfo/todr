@@ -393,13 +393,12 @@ pub struct SyncStruct {
     pub user: Option<UserStruct>,
 }
 
-#[test]
+#[cfg(test)]
 use serde_json;
 
 #[test]
 fn item_deserialize_test() {
 
-    //\"children\": null,
     let json_item = r#"{
                       "id": 33511505,
                       "user_id": 1855589,
@@ -424,7 +423,6 @@ fn item_deserialize_test() {
                       "date_added": "Fri 26 Sep 2014 08:25:05 +0000"
                     }"#;
 
-
     let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
 
     assert_eq!(item.id, 33511505);
@@ -438,7 +436,6 @@ fn item_deserialize_test() {
     assert_eq!(item.item_order, 1);
     assert_eq!(item.day_order, -1);
     assert_eq!(item.collapsed, 0);
-    //assert_eq!(item.children, None);
     assert_eq!(item.labels, vec![12839231, 18391839]);
     assert_eq!(item.assigned_by_uid.unwrap(), 1855589);
     assert_eq!(item.responsible_uid, None);
