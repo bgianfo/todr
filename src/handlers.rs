@@ -80,7 +80,6 @@ fn process_error(error: ease::Error) {
 
 fn process_response_items(response: ease::Response) {
 
-    println!("Response: {0}", response.body);
     let sync_state: types::SyncStruct = serde_json::from_str(&response.body).unwrap();
 
     // Sort the items by their server order.
@@ -94,7 +93,6 @@ fn process_response_items(response: ease::Response) {
 }
 
 fn process_response_projects(response: ease::Response) {
-    println!("Response: {0}", response.body);
     let sync_state: types::SyncStruct = serde_json::from_str(&response.body).unwrap();
 
     // Sort the items by their server order.
