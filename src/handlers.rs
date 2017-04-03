@@ -2,6 +2,8 @@
 
 use std::env;
 use std::error::Error;
+use std::cmp::Ordering;
+
 use ease; // ::{Url, Request};
 use serde_json;
 
@@ -76,10 +78,25 @@ fn process_response_items(response: ease::Response) {
 
     let sync_state: types::SyncStruct = serde_json::from_str(&response.body).unwrap();
 
-    // Sort the items by their server order.
-    //
     let mut items = sync_state.items.unwrap();
-    items.sort_by_key(|i| i.item_order);
+
+    // Sort the items by their server order.
+    let custom_sort = |a: &types::ItemStruct, b: &types::ItemStruct | {
+
+        let item_order_sort = a.item_order.cmp(&b.item_order);
+        let project_order_sort = a.project_id.cmp(&b.project_id);
+
+        // item_order values are only unique per project, so if we want to
+        // display items in the correct order we need to sort by project
+        // groupings first, and then sort by item order.
+        if project_order_sort == Ordering::Equal {
+            item_order_sort
+        } else {
+            project_order_sort
+        }
+    };
+
+    items.sort_by(custom_sort);
 
     for item in items {
         render::render_item(item);
@@ -92,7 +109,7 @@ fn process_response_projects(response: ease::Response) {
     // Sort the items by their server order.
     //
     let mut projects = sync_state.projects.unwrap();
-    projects.sort_by_key(|p| p.parent_id);
+    projects.sort_by_key(|p| p.item_order);
 
     for project in projects {
         render::render_project(project);
