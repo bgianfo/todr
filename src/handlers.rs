@@ -30,20 +30,14 @@ static TODOIST_API: &'static str = "https://todoist.com/API/v7/sync";
 /// -  notification_settings
 ///
 enum TodrResourceType {
-    All,
     Items,
-    Labels,
     Projects,
-    Reminders,
 }
 
 fn to_resource_type(resource_type: TodrResourceType) -> String {
     let resource = match resource_type {
-        TodrResourceType::All => String::from("all"),
         TodrResourceType::Items => String::from("items"),
-        TodrResourceType::Labels => String::from("labels"),
         TodrResourceType::Projects => String::from("projects"),
-        TodrResourceType::Reminders => String::from("reminders"),
     };
 
     format!("[\"{}\"]", &resource)
