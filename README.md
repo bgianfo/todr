@@ -4,8 +4,7 @@ todr
 account from your terminal.
 
 [![Linux build status](https://travis-ci.org/bgianfo/todr.svg?branch=master)](https://travis-ci.org/bgianfo/todr)
-
-Licensed under MIT.
+[![GitHub license](https://img.shields.io/github/license/bgianfo/todr.svg)]()
 
 ### Building/Installation
 
