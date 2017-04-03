@@ -1,0 +1,12 @@
+[package]
+name = "todr"
+version = "0.1.0"
+authors = ["Brian Gianforcaro <b.gianfo@gmail.com>"]
+
+[dependencies]
+serde = "0.9"
+serde_derive = "0.9"
+serde_json = "0.9"
+ease = "*"
+rustyline = "1.0.0"
+term = "*"
