@@ -400,8 +400,8 @@ use serde_json;
 fn item_deserialize_test() {
     let json_item = r#"{
                       "id": 33511505,
-                      "user_id": 1_855_589,
-                      "project_id": 128_501_470,
+                      "user_id": 1855589,
+                      "project_id": 128501470,
                       "content": "Task1",
                       "date_string": "",
                       "date_lang": "en",
@@ -411,8 +411,8 @@ fn item_deserialize_test() {
                       "item_order": 1,
                       "day_order": -1,
                       "collapsed": 0,
-                      "labels": [12_839_231, 18_391_839],
-                      "assigned_by_uid": 1_855_589,
+                      "labels": [12839231, 18391839],
+                      "assigned_by_uid": 1855589,
                       "responsible_uid": null,
                       "checked": 0,
                       "in_history": 0,
