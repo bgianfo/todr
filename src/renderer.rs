@@ -1,20 +1,17 @@
+use term;
 ///!
 ///! Defines methods for rendering output to the console.
 ///!
 ///! The goal being that we separate text formatting
 ///! from the actual processing of data exposed by the API.
 ///!
-
 // Use our internal types module.
 use types;
-use term;
 
 fn project_color_id_map(color: u8) -> term::color::Color {
-
     // The color of the project (a number between 0 and 11, or between 0 and 21 for premium users).
     match color {
-
-    // Normal Colors
+        // Normal Colors
 
         // #95ef63
         0 => term::color::BRIGHT_GREEN,
@@ -41,7 +38,7 @@ fn project_color_id_map(color: u8) -> term::color::Color {
         // #3bd5fb
         11 => term::color::BRIGHT_BLUE,
 
-    // Premium Colors
+        // Premium Colors
 
         // #dc4fad - pinkish
         12 => term::color::BRIGHT_RED,
@@ -77,7 +74,9 @@ pub fn render_project(project: &types::ProjectStruct) {
     // Double the indention level so we have a nice visual indent.
     let ident = usize::from(project.indent * 2);
 
-    terminal.fg(color).expect("Failed to set console foreground");
+    terminal
+        .fg(color)
+        .expect("Failed to set console foreground");
 
     println!("{:ident$}{}", "", project.name, ident = ident);
 
@@ -88,9 +87,11 @@ pub fn render_item(item: &types::ItemStruct) {
     // Double the indention level so we have a nice visual indent.
     let ident = usize::from(item.indent * 2);
 
-     println!("{:ident$}{} ({})",
-                 "",
-                 item.content,
-                 item.date_string,
-                 ident = ident);
+    println!(
+        "{:ident$}{} ({})",
+        "",
+        item.content,
+        item.date_string,
+        ident = ident
+    );
 }

@@ -1,13 +1,13 @@
 //! This module implements the todr REPL logic.
 
 use dirs;
-use std::path::Path;
 use rustyline::error::ReadlineError;
 use rustyline::Editor;
+use std::path::Path;
 
 // Use our internal handlers module.
-use handlers;
 use completer::CustomCompletion;
+use handlers;
 
 // On unix platforms you can use ANSI escape sequences
 #[cfg(unix)]
@@ -57,13 +57,15 @@ impl Todr {
 
     /// Executes the main process loop.
     pub fn process_command_loop(&mut self) {
-
-        if self.readline_editor.load_history(&self.history_file).is_err() {
+        if self
+            .readline_editor
+            .load_history(&self.history_file)
+            .is_err()
+        {
             println!("No previous history to load...");
         }
 
         loop {
-
             // Handle graceful exit request.
             if self.should_exit {
                 break;
@@ -96,11 +98,9 @@ impl Todr {
 
     /// Processes a single line for a command.
     fn process_line(&mut self, line: &str) {
-
         self.readline_editor.add_history_entry(line);
 
         match line {
-
             // Handle printing help message.
             "help" | "h" => handlers::help_command(),
 

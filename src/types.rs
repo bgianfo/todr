@@ -12,14 +12,13 @@
 ///! - `Serialize` and `Deserialize` impls for serialization.
 ///! - 'Debug ' impl for ... debugging.
 ///!
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 /// Struct to be used for objects which we don't
 /// yet support. It doesn't deserialize anything.
 ///
 #[derive(Serialize, Deserialize, Debug)]
 pub struct NotYetUsedStruct {}
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct LabelStruct {}
@@ -399,7 +398,6 @@ use serde_json;
 
 #[test]
 fn item_deserialize_test() {
-
     let json_item = r#"{
                       "id": 33511505,
                       "user_id": 1_855_589,

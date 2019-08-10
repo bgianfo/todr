@@ -1,18 +1,17 @@
 //! This module implements the todr command execution logic.
 
-use std::env;
 use std::cmp::Ordering;
 use std::collections::HashMap;
+use std::env;
 
 use reqwest;
 
 // Use our internal types module.
-use types;
 use renderer;
+use types;
 
 // Endpoint for REST communication with the Todoist.
 static TODOIST_API: &'static str = "https://todoist.com/API/v8/sync";
-
 
 /// Used to specify what resources to fetch from the server.
 /// It should be a JSON-encoded array of strings.
@@ -58,8 +57,8 @@ fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response
     //
     // Link: https://developer.todoist.com/sync/v8/?shell
     //
-    let sync_token : String = "*".to_string();
-    let all_data : String = "true".to_string();
+    let sync_token: String = "*".to_string();
+    let all_data: String = "true".to_string();
     let mut params = HashMap::new();
     params.insert("token", &auth_token);
     params.insert("sync_token", &sync_token);
@@ -69,9 +68,7 @@ fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response
     let client = reqwest::Client::new();
 
     // Issue the request.
-    client.get(TODOIST_API)
-        .form(&params)
-        .send()
+    client.get(TODOIST_API).form(&params).send()
 }
 
 //
@@ -83,14 +80,14 @@ fn process_error(error: &reqwest::Error) {
 }
 
 fn process_response_items(mut response: reqwest::Response) {
-
-    let sync_state: types::SyncStruct = response.json().expect("Failed to deserialize json response");
+    let sync_state: types::SyncStruct = response
+        .json()
+        .expect("Failed to deserialize json response");
 
     let mut items = sync_state.items.expect("Failed to parse items JSON");
 
     // Sort the items by their server order.
-    let custom_sort = |a: &types::ItemStruct, b: &types::ItemStruct | {
-
+    let custom_sort = |a: &types::ItemStruct, b: &types::ItemStruct| {
         let item_order_sort = a.item_order.cmp(&b.item_order);
         let project_order_sort = a.project_id.cmp(&b.project_id);
 
@@ -112,7 +109,9 @@ fn process_response_items(mut response: reqwest::Response) {
 }
 
 fn process_response_projects(mut response: reqwest::Response) {
-    let sync_state: types::SyncStruct = response.json().expect("Failed to deserialize json response");
+    let sync_state: types::SyncStruct = response
+        .json()
+        .expect("Failed to deserialize json response");
 
     // Sort the items by their server order.
     //
