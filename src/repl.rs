@@ -45,7 +45,7 @@ impl TodrRepl {
         let mut editor = Editor::<CommandCompleter>::new();
 
         let completer = CommandCompleter::new();
-        editor.set_completer(Some(completer));
+        editor.set_helper(Some(completer));
 
         TodrRepl {
             // `()` can be used when no completer is required

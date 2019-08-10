@@ -154,7 +154,7 @@ pub fn help_command() {
     println!("");
     println!("  i | items - List all active todo items.");
     println!("");
-    println!("  p | proj  - List all active projects.");
+    println!("  p | projs - List all active projects.");
     println!("");
     println!("  q | quit  - Exit the application.");
     println!("");
