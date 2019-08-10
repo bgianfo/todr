@@ -3,3 +3,8 @@ rust:
   - stable
   - beta
   - nightly
+
+os:
+  - windows
+  - linux
+  - osx
