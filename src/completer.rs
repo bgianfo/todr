@@ -51,28 +51,27 @@ impl rustyline::Helper for CustomCompletion {}
 
 impl rustyline::highlight::Highlighter for CustomCompletion {}
 
-/*
- * Figure out how to re-enable tests, as latest rustyline makes it impossible?
- * See: https://github.com/kkawakam/rustyline/issues/261
+// Tests
 
 #[cfg(test)]
 use rustyline::completion::Completer;
 
 #[cfg(test)]
-fn verify_completion(input: &str, expected_completion: &str)
-{
+fn verify_completion(input: &str, expected_completion: &str) {
     let hist = rustyline::history::History::new();
-
-    let ctx = rustyline::Context {
-    };
+    let ctx = rustyline::Context::new(&hist);
 
     let completer = CustomCompletion::new();
-    assert_eq!(completer.complete(input, 0, &ctx).unwrap(), (0, vec![String::from(expected_completion)]));
+    assert_eq!(
+        completer.complete(input, 0, &ctx).unwrap(),
+        (0, vec![String::from(expected_completion)])
+    );
 }
 
 #[test]
 fn completion_test_items() {
-    // Verify that the completion for i completes to items.  verify_completion("i", "items");
+    // Verify that the completion for i completes to items.
+    verify_completion("i", "items");
     verify_completion("ite", "items");
 }
 
@@ -96,4 +95,3 @@ fn completion_test_projects() {
     verify_completion("p", "projs");
     verify_completion("pro", "projs");
 }
-*/
