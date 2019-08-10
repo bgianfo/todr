@@ -1,6 +1,6 @@
 //! This module implements the todr REPL logic.
 
-use std::env;
+use dirs;
 use std::path::Path;
 use rustyline::error::ReadlineError;
 use rustyline::Editor;
@@ -36,7 +36,7 @@ pub struct TodrRepl {
 impl TodrRepl {
     /// Factory method.
     pub fn new() -> TodrRepl {
-        let home = env::home_dir().unwrap();
+        let home = dirs::home_dir().unwrap();
         let history_file = Path::new(&home)
             .join(DEFAULT_HISTORY_FILE)
             .to_string_lossy()
