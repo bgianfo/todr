@@ -1,24 +1,23 @@
-//! This module implements the todr command exeuction logic.
+//! This module implements the todr command execution logic.
 
 use std::env;
-use std::error::Error;
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
-use ease; // ::{Url, Request};
-use serde_json;
+use reqwest;
 
 // Use our internal types module.
 use types;
 use render;
 
 // Endpoint for REST communication with the Todoist.
-static TODOIST_API: &'static str = "https://todoist.com/API/v7/sync";
+static TODOIST_API: &'static str = "https://todoist.com/API/v8/sync";
 
 
 /// Used to specify what resources to fetch from the server.
 /// It should be a JSON-encoded array of strings.
 ///
-/// Here is a list of avaialbe resource types:
+/// Here is a list of available resource types:
 /// -  labels,
 /// -  projects,
 /// -  items,
@@ -45,38 +44,47 @@ fn to_resource_type(resource_type: TodrResourceType) -> String {
     format!("[\"{}\"]", &resource)
 }
 
-fn execute_request(resource_type: TodrResourceType) -> Result<ease::Response, ease::Error> {
+fn execute_request(resource_type: TodrResourceType) -> Result<reqwest::Response, reqwest::Error> {
     // Fetch the token from the users environment.
     let auth_token = env::var("TODR_AUTHTOKEN").unwrap();
 
     // Map the resource type to the proper string.
     let resource_string = to_resource_type(resource_type);
 
-    let url = ease::Url::parse(TODOIST_API).unwrap();
+    // Setup the request parameters.
+    //
+    // See the API documentation available for the full
+    // list of parameters, their values and what they do.
+    //
+    // Link: https://developer.todoist.com/sync/v8/?shell
+    //
+    let sync_token : String = "*".to_string();
+    let all_data : String = "true".to_string();
+    let mut params = HashMap::new();
+    params.insert("token", &auth_token);
+    params.insert("sync_token", &sync_token);
+    params.insert("resource_types", &resource_string);
+    params.insert("all_data", &all_data);
 
-    ease::Request::new(url)
-        .param("token", &auth_token)
-        .param("sync_token", "*")
-        .param("resource_types", &resource_string)
-        .param("all_data", "true")
-        .get()
+    let client = reqwest::Client::new();
+
+    // Issue the request.
+    client.get(TODOIST_API)
+        .form(&params)
+        .send()
 }
 
 //
 // Request response handler implementations.
 //
 
-fn process_error(error: ease::Error) {
-    match error {
-        ease::Error::UnsuccessfulResponse(r) => println!("Response: {}", r.body),
-        ease::Error::Json(e) => println!("{}", e.description()),
-        ease::Error::Hyper(he) => println!("{}", he.description()),
-    }
+fn process_error(error: reqwest::Error) {
+    println!("{}", error);
 }
 
-fn process_response_items(response: ease::Response) {
+fn process_response_items(mut response: reqwest::Response) {
 
-    let sync_state: types::SyncStruct = serde_json::from_str(&response.body).unwrap();
+    let sync_state: types::SyncStruct = response.json().unwrap();
 
     let mut items = sync_state.items.unwrap();
 
@@ -103,8 +111,8 @@ fn process_response_items(response: ease::Response) {
     }
 }
 
-fn process_response_projects(response: ease::Response) {
-    let sync_state: types::SyncStruct = serde_json::from_str(&response.body).unwrap();
+fn process_response_projects(mut response: reqwest::Response) {
+    let sync_state: types::SyncStruct = response.json().unwrap();
 
     // Sort the items by their server order.
     //

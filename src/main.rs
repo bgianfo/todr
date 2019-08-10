@@ -1,8 +1,7 @@
-#[macro_use]
-extern crate serde_derive;
+extern crate serde;
 extern crate serde_json;
 extern crate rustyline;
-extern crate ease;
+extern crate reqwest;
 extern crate term;
 
 // Use the module in the sub directory.

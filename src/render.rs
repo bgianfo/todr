@@ -1,9 +1,8 @@
 ///!
 ///! Defines methods for rendering output to the console.
 ///!
-///! The goal being that we seperate formatting text and
-///! all of that business from the actual processing of 
-///! the various data exposed from the API.
+///! The goal being that we separate text formatting
+///! from the actual processing of data exposed by the API.
 ///!
 
 // Use our internal types module.

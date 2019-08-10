@@ -12,6 +12,7 @@
 ///! - `Serialize` and `Deserialize` impls for serialization.
 ///! - 'Debug ' impl for ... debugging.
 ///!
+use serde::{Serialize, Deserialize};
 
 /// Struct to be used for objects which we don't
 /// yet support. It doesn't deserialize anything.
