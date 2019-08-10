@@ -1,27 +1,25 @@
-
 use rustyline;
 use rustyline::line_buffer::LineBuffer;
 
-
-pub struct CommandCompleter {
+pub struct CustomCompletion {
     commands: Vec<&'static str>,
     hinter: rustyline::hint::HistoryHinter,
 }
 
-impl CommandCompleter {
+impl CustomCompletion {
 
-    pub fn new() -> CommandCompleter {
+    pub fn new() -> Self {
 
         let commands: Vec<&str> = vec!["help", "items", "projs", "quit" ];
 
-        CommandCompleter {
-           commands: commands,
+        Self {
+           commands,
            hinter: rustyline::hint::HistoryHinter { },
         }
     }
 }
 
-impl rustyline::completion::Completer for CommandCompleter {
+impl rustyline::completion::Completer for CustomCompletion {
     type Candidate = String;
 
     fn complete(&self, line: &str, pos: usize, _ctx: &rustyline::Context<'_>) -> rustyline::Result<(usize, Vec<String>)> {
@@ -41,17 +39,17 @@ impl rustyline::completion::Completer for CommandCompleter {
     }
 }
 
-impl rustyline::hint::Hinter for CommandCompleter {
+impl rustyline::hint::Hinter for CustomCompletion {
     fn hint(&self, line: &str, pos: usize, ctx: &rustyline::Context<'_>) -> Option<String> {
         self.hinter.hint(line, pos, ctx)
     }
 }
 
-impl rustyline::Helper for CommandCompleter {
+impl rustyline::Helper for CustomCompletion {
 }
 
 
-impl rustyline::highlight::Highlighter for CommandCompleter {
+impl rustyline::highlight::Highlighter for CustomCompletion {
 }
 
 /*
@@ -69,7 +67,7 @@ fn verify_completion(input: &str, expected_completion: &str)
     let ctx = rustyline::Context {
     };
 
-    let completer = CommandCompleter::new();
+    let completer = CustomCompletion::new();
     assert_eq!(completer.complete(input, 0, &ctx).unwrap(), (0, vec![String::from(expected_completion)]));
 }
 

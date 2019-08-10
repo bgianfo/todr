@@ -69,22 +69,22 @@ fn project_color_id_map(color: u8) -> term::color::Color {
     }
 }
 
-pub fn render_project(project: types::ProjectStruct) {
+pub fn render_project(project: &types::ProjectStruct) {
     // Switch the term to the color the project has set.
-    let mut terminal = term::stdout().unwrap();
+    let mut terminal = term::stdout().expect("Failed to obtain stdout!");
     let color = project_color_id_map(project.color);
 
     // Double the indention level so we have a nice visual indent.
     let ident = usize::from(project.indent * 2);
 
-    terminal.fg(color).unwrap();
+    terminal.fg(color).expect("Failed to set console foreground");
 
     println!("{:ident$}{}", "", project.name, ident = ident);
 
-    terminal.reset().unwrap();
+    terminal.reset().expect("Failed to reset termianl color");
 }
 
-pub fn render_item(item: types::ItemStruct) {
+pub fn render_item(item: &types::ItemStruct) {
     // Double the indention level so we have a nice visual indent.
     let ident = usize::from(item.indent * 2);
 

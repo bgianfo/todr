@@ -7,7 +7,7 @@ use rustyline::Editor;
 
 // Use our internal handlers module.
 use handlers;
-use completer::CommandCompleter;
+use completer::CustomCompletion;
 
 // On unix platforms you can use ANSI escape sequences
 #[cfg(unix)]
@@ -22,9 +22,9 @@ static PROMPT: &'static str = ">> ";
 static DEFAULT_HISTORY_FILE: &'static str = ".todr_history";
 
 #[derive(Debug)]
-pub struct TodrRepl {
+pub struct Todr {
     /// The repl's readline editor.
-    readline_editor: Editor<CommandCompleter>,
+    readline_editor: Editor<CustomCompletion>,
 
     // The configured history file.
     history_file: String,
@@ -33,24 +33,24 @@ pub struct TodrRepl {
     should_exit: bool,
 }
 
-impl TodrRepl {
+impl Todr {
     /// Factory method.
-    pub fn new() -> TodrRepl {
-        let home = dirs::home_dir().unwrap();
+    pub fn new() -> Self {
+        let home = dirs::home_dir().expect("Home Dir couldn't be found");
         let history_file = Path::new(&home)
             .join(DEFAULT_HISTORY_FILE)
             .to_string_lossy()
             .to_string();
 
-        let mut editor = Editor::<CommandCompleter>::new();
+        let mut editor = Editor::<CustomCompletion>::new();
 
-        let completer = CommandCompleter::new();
+        let completer = CustomCompletion::new();
         editor.set_helper(Some(completer));
 
-        TodrRepl {
+        Self {
             // `()` can be used when no completer is required
             readline_editor: editor,
-            history_file: history_file,
+            history_file,
             should_exit: false,
         }
     }
@@ -58,7 +58,7 @@ impl TodrRepl {
     /// Executes the main process loop.
     pub fn process_command_loop(&mut self) {
 
-        if let Err(_) = self.readline_editor.load_history(&self.history_file) {
+        if self.readline_editor.load_history(&self.history_file).is_err() {
             println!("No previous history to load...");
         }
 
@@ -72,7 +72,7 @@ impl TodrRepl {
             let readline = self.readline_editor.readline(PROMPT);
             match readline {
                 Ok(line) => {
-                    self.process_line(line);
+                    self.process_line(&line);
                 }
                 Err(ReadlineError::Interrupted) => {
                     println!("CTRL-C");
@@ -91,15 +91,15 @@ impl TodrRepl {
 
         self.readline_editor
             .save_history(&self.history_file)
-            .unwrap();
+            .expect("Failed to save repl history file");
     }
 
     /// Processes a single line for a command.
-    fn process_line(&mut self, line: String) {
+    fn process_line(&mut self, line: &str) {
 
-        self.readline_editor.add_history_entry(&line);
+        self.readline_editor.add_history_entry(line);
 
-        match line.as_ref() {
+        match line {
 
             // Handle printing help message.
             "help" | "h" => handlers::help_command(),
@@ -114,7 +114,7 @@ impl TodrRepl {
             "quit" | "q" => self.should_exit = true,
 
             // Handle unknown commands.
-            _ => handlers::unknown_command(&line),
+            _ => handlers::unknown_command(line),
         }
     }
 }

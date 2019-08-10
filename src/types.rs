@@ -2,8 +2,8 @@
 ///! Define types which allow us to serialize/de-serialize
 ///! messages when interacting with the todoist API.
 ///!
-///! Types manuallly converted from documentation here:
-///!  - https://developer.todoist.com/
+///! Types manually converted from documentation here:
+///!  - [Todoist API](https://developer.todoist.com/)
 ///!
 ///! Note: These are using v7 definition of the todoist API.
 ///!
@@ -402,8 +402,8 @@ fn item_deserialize_test() {
 
     let json_item = r#"{
                       "id": 33511505,
-                      "user_id": 1855589,
-                      "project_id": 128501470,
+                      "user_id": 1_855_589,
+                      "project_id": 128_501_470,
                       "content": "Task1",
                       "date_string": "",
                       "date_lang": "en",
@@ -413,8 +413,8 @@ fn item_deserialize_test() {
                       "item_order": 1,
                       "day_order": -1,
                       "collapsed": 0,
-                      "labels": [12839231, 18391839],
-                      "assigned_by_uid": 1855589,
+                      "labels": [12_839_231, 18_391_839],
+                      "assigned_by_uid": 1_855_589,
                       "responsible_uid": null,
                       "checked": 0,
                       "in_history": 0,
@@ -426,8 +426,8 @@ fn item_deserialize_test() {
 
     let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
 
-    assert_eq!(item.id, 33511505);
-    assert_eq!(item.user_id, 1855589);
+    assert_eq!(item.id, 33_511_505);
+    assert_eq!(item.user_id, 1_855_589);
     assert_eq!(item.content, "Task1");
     assert_eq!(item.date_string, "");
     assert_eq!(item.date_lang, "en");
@@ -437,8 +437,8 @@ fn item_deserialize_test() {
     assert_eq!(item.item_order, 1);
     assert_eq!(item.day_order, -1);
     assert_eq!(item.collapsed, 0);
-    assert_eq!(item.labels, vec![12839231, 18391839]);
-    assert_eq!(item.assigned_by_uid.unwrap(), 1855589);
+    assert_eq!(item.labels, vec![12_839_231, 18_391_839]);
+    assert_eq!(item.assigned_by_uid.unwrap(), 1_855_589);
     assert_eq!(item.responsible_uid, None);
     assert_eq!(item.checked, 0);
     assert_eq!(item.in_history, 0);

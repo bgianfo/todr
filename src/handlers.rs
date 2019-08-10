@@ -8,7 +8,7 @@ use reqwest;
 
 // Use our internal types module.
 use types;
-use render;
+use renderer;
 
 // Endpoint for REST communication with the Todoist.
 static TODOIST_API: &'static str = "https://todoist.com/API/v8/sync";
@@ -26,16 +26,16 @@ static TODOIST_API: &'static str = "https://todoist.com/API/v8/sync";
 /// -  reminders,
 /// -  locations,
 /// -  user,
-/// -  live_notifications,
+/// -  `live_notifications`,
 /// -  collaborators,
-/// -  notification_settings
+/// - `notification_settings`
 ///
 enum TodrResourceType {
     Items,
     Projects,
 }
 
-fn to_resource_type(resource_type: TodrResourceType) -> String {
+fn to_resource_type(resource_type: &TodrResourceType) -> String {
     let resource = match resource_type {
         TodrResourceType::Items => String::from("items"),
         TodrResourceType::Projects => String::from("projects"),
@@ -44,9 +44,9 @@ fn to_resource_type(resource_type: TodrResourceType) -> String {
     format!("[\"{}\"]", &resource)
 }
 
-fn execute_request(resource_type: TodrResourceType) -> Result<reqwest::Response, reqwest::Error> {
+fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response, reqwest::Error> {
     // Fetch the token from the users environment.
-    let auth_token = env::var("TODR_AUTHTOKEN").unwrap();
+    let auth_token = env::var("TODR_AUTHTOKEN").expect("TODR_AUTHTOKEN is not set!");
 
     // Map the resource type to the proper string.
     let resource_string = to_resource_type(resource_type);
@@ -78,15 +78,15 @@ fn execute_request(resource_type: TodrResourceType) -> Result<reqwest::Response,
 // Request response handler implementations.
 //
 
-fn process_error(error: reqwest::Error) {
+fn process_error(error: &reqwest::Error) {
     println!("{}", error);
 }
 
 fn process_response_items(mut response: reqwest::Response) {
 
-    let sync_state: types::SyncStruct = response.json().unwrap();
+    let sync_state: types::SyncStruct = response.json().expect("Failed to deserialize json response");
 
-    let mut items = sync_state.items.unwrap();
+    let mut items = sync_state.items.expect("Failed to parse items JSON");
 
     // Sort the items by their server order.
     let custom_sort = |a: &types::ItemStruct, b: &types::ItemStruct | {
@@ -107,20 +107,20 @@ fn process_response_items(mut response: reqwest::Response) {
     items.sort_by(custom_sort);
 
     for item in items {
-        render::render_item(item);
+        renderer::render_item(&item);
     }
 }
 
 fn process_response_projects(mut response: reqwest::Response) {
-    let sync_state: types::SyncStruct = response.json().unwrap();
+    let sync_state: types::SyncStruct = response.json().expect("Failed to deserialize json response");
 
     // Sort the items by their server order.
     //
-    let mut projects = sync_state.projects.unwrap();
+    let mut projects = sync_state.projects.expect("Failed to parse projects JSON");
     projects.sort_by_key(|p| p.item_order);
 
     for project in projects {
-        render::render_project(project);
+        renderer::render_project(&project);
     }
 }
 
@@ -129,35 +129,35 @@ fn process_response_projects(mut response: reqwest::Response) {
 //
 
 pub fn items_command() {
-    let response = execute_request(TodrResourceType::Items);
+    let response = execute_request(&TodrResourceType::Items);
 
     match response {
         Ok(r) => process_response_items(r),
-        Err(e) => process_error(e),
+        Err(e) => process_error(&e),
     }
 }
 
 pub fn projects_command() {
-    let response = execute_request(TodrResourceType::Projects);
+    let response = execute_request(&TodrResourceType::Projects);
 
     match response {
         Ok(r) => process_response_projects(r),
-        Err(e) => process_error(e),
+        Err(e) => process_error(&e),
     }
 }
 
 pub fn help_command() {
-    println!("");
+    println!();
     println!("Commands:");
-    println!("");
+    println!();
     println!("  h | help  - This help message");
-    println!("");
+    println!();
     println!("  i | items - List all active todo items.");
-    println!("");
+    println!();
     println!("  p | projs - List all active projects.");
-    println!("");
+    println!();
     println!("  q | quit  - Exit the application.");
-    println!("");
+    println!();
 }
 
 pub fn unknown_command(command: &str) {
