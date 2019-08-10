@@ -11,7 +11,7 @@ use renderer;
 use types;
 
 // Endpoint for REST communication with the Todoist.
-static TODOIST_API: &'static str = "https://todoist.com/API/v8/sync";
+static TODOIST_API: &'static str = "https://todoist.com/API/v7/sync";
 
 /// Used to specify what resources to fetch from the server.
 /// It should be a JSON-encoded array of strings.
@@ -68,7 +68,7 @@ fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response
     let client = reqwest::Client::new();
 
     // Issue the request.
-    client.get(TODOIST_API).form(&params).send()
+    client.get(TODOIST_API).query(&params).send()
 }
 
 //
@@ -79,10 +79,20 @@ fn process_error(error: &reqwest::Error) {
     println!("{}", error);
 }
 
+fn common_response_handler(response: &mut reqwest::Response) {
+    // Only print these traces in debug mode.
+    if cfg!(debug_assertions) {
+        println!("Headers:\n{:?}", response.headers());
+        println!("Body:\n{:?}", response.text());
+    }
+}
+
 fn process_response_items(mut response: reqwest::Response) {
+    common_response_handler(&mut response);
+
     let sync_state: types::SyncStruct = response
         .json()
-        .expect("Failed to deserialize json response");
+        .expect("Failed to de-serialize JSON response");
 
     let mut items = sync_state.items.expect("Failed to parse items JSON");
 
@@ -109,6 +119,8 @@ fn process_response_items(mut response: reqwest::Response) {
 }
 
 fn process_response_projects(mut response: reqwest::Response) {
+    common_response_handler(&mut response);
+
     let sync_state: types::SyncStruct = response
         .json()
         .expect("Failed to deserialize json response");
