@@ -3,6 +3,8 @@ todr
 `todr` is a command line tool which allows you to interact with your todoist
 account from your terminal.
 
+Note: This tool is not created by, affiliated with, or supported by Doist.
+
 [![Linux build status](https://travis-ci.org/bgianfo/todr.svg?branch=master)](https://travis-ci.org/bgianfo/todr)
 [![GitHub license](https://img.shields.io/github/license/bgianfo/todr.svg)]()
 
