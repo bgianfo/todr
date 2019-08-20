@@ -31,6 +31,8 @@ pub struct ItemStruct {
     /// The id of the task.
     pub id: u64,
 
+    pub all_day: bool,
+
     /// The owner of the task.
     pub user_id: u64,
 
@@ -106,6 +108,9 @@ pub struct ItemStruct {
 
     /// The date when the task was created.
     pub date_added: Option<String>,
+
+    /// The date when the task was completed.
+    pub date_completed: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -353,7 +358,7 @@ pub struct SyncStruct {
     /// Note: Not yet used, so we don't parse it yet.
     pub collaborator_states: Option<Vec<NotYetUsedStruct>>,
 
-    // Specifies the order of items in daily agenda.
+    /// Specifies the order of items in daily agenda.
     pub day_orders: Option<NotYetUsedStruct>,
 
     /// An array of filters.
@@ -391,6 +396,10 @@ pub struct SyncStruct {
 
     /// The users information.
     pub user: Option<UserStruct>,
+
+    /// No idea what this is used for.
+    /// Note: Not yet used, so we don't parse it yet.
+    pub temp_id_mapping: Option<NotYetUsedStruct>,
 }
 
 #[cfg(test)]
@@ -399,6 +408,7 @@ use serde_json;
 #[test]
 fn item_deserialize_test() {
     let json_item = r#"{
+                      "all_day": true,
                       "id": 33511505,
                       "user_id": 1855589,
                       "project_id": 128501470,
@@ -422,6 +432,7 @@ fn item_deserialize_test() {
                       "date_added": "Fri 26 Sep 2014 08:25:05 +0000"
                     }"#;
 
+
     let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
 
     assert_eq!(item.id, 33_511_505);
@@ -444,4 +455,77 @@ fn item_deserialize_test() {
     assert_eq!(item.is_archived, 0);
     assert_eq!(item.sync_id, None);
     assert_eq!(item.date_added.unwrap(), "Fri 26 Sep 2014 08:25:05 +0000");
+}
+
+#[test]
+fn item_deserialize_latest_test()
+{
+    let json_item = r#"{
+      "all_day": true,
+      "assigned_by_uid": 7261,
+      "checked": 0,
+      "collapsed": 0,
+      "content": "Order bike electric regulator.",
+      "date_added": "Sat 08 Jun 2019 13:00:28 +0000",
+      "date_completed": null,
+      "date_lang": "en",
+      "date_string": "22 Jun",
+      "day_order": 10,
+      "due_date_utc": "Sun 23 Jun 2019 06:59:59 +0000",
+      "id": 3238150997,
+      "in_history": 0,
+      "indent": 1,
+      "is_archived": 0,
+      "is_deleted": 0,
+      "item_order": 5,
+      "labels": [],
+      "parent_id": null,
+      "priority": 1,
+      "project_id": 2211785308,
+      "responsible_uid": null,
+      "sync_id": null,
+      "user_id": 7261
+    }"#;
+
+    let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
+}
+
+#[test]
+fn sync_deserialize_test()
+{
+    let json_item = r#"{
+      "full_sync": true,
+      "items": [
+          {
+          "all_day": true,
+          "assigned_by_uid": 7261,
+          "checked": 0,
+          "collapsed": 0,
+          "content": "Order bike electric regulator.",
+          "date_added": "Sat 08 Jun 2019 13:00:28 +0000",
+          "date_completed": null,
+          "date_lang": "en",
+          "date_string": "22 Jun",
+          "day_order": 10,
+          "due_date_utc": "Sun 23 Jun 2019 06:59:59 +0000",
+          "id": 3238150997,
+          "in_history": 0,
+          "indent": 1,
+          "is_archived": 0,
+          "is_deleted": 0,
+          "item_order": 5,
+          "labels": [],
+          "parent_id": null,
+          "priority": 1,
+          "project_id": 2211785308,
+          "responsible_uid": null,
+          "sync_id": null,
+          "user_id": 7261
+         }
+      ],
+      "sync_token": "PPHBRv43cSLUtndVYZxjN4JENgQ2AALKeESwpEhysYEtGxJBshJTCGVfPbRJLUGaMAqbcEYtrHB05wdO-6p2nHflyDYPzzjrwlf29nEDsfOVn1s",
+      "temp_id_mapping": {}
+    }"#;
+
+    let item: SyncStruct = serde_json::from_str(&json_item).unwrap();
 }
