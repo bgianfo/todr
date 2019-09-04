@@ -17,6 +17,9 @@
 #![allow(clippy::use_debug)]
 #![allow(clippy::missing_docs_in_private_items)]
 
+// Disable unsafe code.
+#![forbid(unsafe_code)]
+
 extern crate dirs;
 extern crate reqwest;
 extern crate rustyline;
