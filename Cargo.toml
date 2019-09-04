@@ -19,7 +19,4 @@ serde_json = "1.0"
 reqwest = "0.9"
 term = "0.6"
 dirs = "2"
-# Temporarily use master version of rustyline to take advantage
-# of this commit: https://github.com/kkawakam/rustyline/commit/7a052a9ae42d00a553813c98c8db0e8d4c3a81ea
-# Once the new package is released, we can switch back.
 rustyline = "5"
