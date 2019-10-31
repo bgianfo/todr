@@ -7,6 +7,7 @@ Note: This tool is not created by, affiliated with, or supported by Doist.
 
 [![Linux build status](https://travis-ci.org/bgianfo/todr.svg?branch=master)](https://travis-ci.org/bgianfo/todr)
 [![GitHub license](https://img.shields.io/github/license/bgianfo/todr.svg)]()
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=bgianfo/todr)](https://dependabot.com)
 
 ### Building/Installation
 
