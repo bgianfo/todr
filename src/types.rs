@@ -487,7 +487,7 @@ fn item_deserialize_latest_test()
       "user_id": 7261
     }"#;
 
-    let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
+    let _item: ItemStruct = serde_json::from_str(&json_item).unwrap();
 }
 
 #[test]
@@ -527,5 +527,5 @@ fn sync_deserialize_test()
       "temp_id_mapping": {}
     }"#;
 
-    let item: SyncStruct = serde_json::from_str(&json_item).unwrap();
+    let _item: SyncStruct = serde_json::from_str(&json_item).unwrap();
 }
