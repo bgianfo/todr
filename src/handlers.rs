@@ -2,13 +2,13 @@
 
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use std::env;
 
 use reqwest;
 
 // Use our internal types module.
 use renderer;
 use types;
+use config::Configuration;
 
 // Endpoint for REST communication with the Todoist.
 static TODOIST_API: &'static str = "https://todoist.com/API/v7/sync";
@@ -45,7 +45,7 @@ fn to_resource_type(resource_type: &TodrResourceType) -> String {
 
 fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response, reqwest::Error> {
     // Fetch the token from the users environment.
-    let auth_token = env::var("TODR_AUTHTOKEN").expect("TODR_AUTHTOKEN is not set!");
+    let auth_token = Configuration::api_token();
 
     // Map the resource type to the proper string.
     let resource_string = to_resource_type(resource_type);

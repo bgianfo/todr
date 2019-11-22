@@ -29,6 +29,7 @@ extern crate term;
 
 // Use the module in the sub directory.
 mod completer;
+mod config;
 mod handlers;
 mod renderer;
 mod repl;
