@@ -43,7 +43,7 @@ fn to_resource_type(resource_type: &TodrResourceType) -> String {
     format!("[\"{}\"]", &resource)
 }
 
-fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response, reqwest::Error> {
+fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::blocking::Response, reqwest::Error> {
     // Fetch the token from the users environment.
     let auth_token = Configuration::api_token();
 
@@ -65,7 +65,7 @@ fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::Response
     params.insert("resource_types", &resource_string);
     params.insert("all_data", &all_data);
 
-    let client = reqwest::Client::new();
+    let client = reqwest::blocking::Client::new();
 
     // Issue the request.
     client.get(TODOIST_API).query(&params).send()
@@ -79,15 +79,14 @@ fn process_error(error: &reqwest::Error) {
     println!("{}", error);
 }
 
-fn common_response_handler(response: &mut reqwest::Response) {
+fn common_response_handler(response: &mut reqwest::blocking::Response) {
     // Only print these traces in debug mode.
     if cfg!(debug_assertions) {
         println!("Headers:\n{:?}", response.headers());
-        println!("Body:\n{:?}", response.text());
     }
 }
 
-fn process_response_items(mut response: reqwest::Response) {
+fn process_response_items(mut response: reqwest::blocking::Response) {
     common_response_handler(&mut response);
 
     let sync_state: types::SyncStruct = response
@@ -118,7 +117,7 @@ fn process_response_items(mut response: reqwest::Response) {
     }
 }
 
-fn process_response_projects(mut response: reqwest::Response) {
+fn process_response_projects(mut response: reqwest::blocking::Response) {
     common_response_handler(&mut response);
 
     let sync_state: types::SyncStruct = response
