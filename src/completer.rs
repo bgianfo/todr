@@ -47,6 +47,8 @@ impl rustyline::hint::Hinter for CustomCompletion {
     }
 }
 
+impl rustyline::validate::Validator for CustomCompletion {}
+
 impl rustyline::Helper for CustomCompletion {}
 
 impl rustyline::highlight::Highlighter for CustomCompletion {}
