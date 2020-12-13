@@ -1,0 +1,84 @@
+name: ci
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+
+  test:
+    name: Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # The docs seem to suggest that we can have a matrix with just an
+        # include directive, but it results in a "matrix must define at least
+        # one vector" error in the CI system.
+        build: [pinned, stable, beta, nightly, macos, win-msvc, win-gnu]
+        include:
+        - build: pinned
+          os: ubuntu-latest
+          rust: 1.28.0
+        - build: stable
+          os: ubuntu-latest
+          rust: stable
+        - build: beta
+          os: ubuntu-latest
+          rust: beta
+        - build: nightly
+          os: ubuntu-latest
+          rust: nightly
+        - build: macos
+          os: macos-latest
+          rust: stable
+        - build: win-msvc
+          os: windows-latest
+          rust: stable
+        - build: win-gnu
+          os: windows-latest
+          rust: stable-x86_64-gnu
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+        override: true
+        profile: minimal
+
+    - name: Build
+      run: cargo build --verbose
+
+    - name: Docs
+      run: cargo doc --verbose
+
+    - name: Tests
+      run: cargo test --verbose
+
+  rustfmt:
+    name: Format Check (rustfmt)
+    runs-on: ubuntu-18.04
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+        profile: minimal
+        components: rustfmt
+
+    - name: Check formatting
+      run: cargo fmt -- --check
