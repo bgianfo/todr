@@ -42,6 +42,8 @@ impl rustyline::completion::Completer for CustomCompletion {
 }
 
 impl rustyline::hint::Hinter for CustomCompletion {
+    type Hint = String;
+
     fn hint(&self, line: &str, pos: usize, ctx: &rustyline::Context<'_>) -> Option<String> {
         self.hinter.hint(line, pos, ctx)
     }
