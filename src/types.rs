@@ -432,7 +432,6 @@ fn item_deserialize_test() {
                       "date_added": "Fri 26 Sep 2014 08:25:05 +0000"
                     }"#;
 
-
     let item: ItemStruct = serde_json::from_str(&json_item).unwrap();
 
     assert_eq!(item.id, 33_511_505);
@@ -458,8 +457,7 @@ fn item_deserialize_test() {
 }
 
 #[test]
-fn item_deserialize_latest_test()
-{
+fn item_deserialize_latest_test() {
     let json_item = r#"{
       "all_day": true,
       "assigned_by_uid": 7261,
@@ -491,8 +489,7 @@ fn item_deserialize_latest_test()
 }
 
 #[test]
-fn sync_deserialize_test()
-{
+fn sync_deserialize_test() {
     let json_item = r#"{
       "full_sync": true,
       "items": [

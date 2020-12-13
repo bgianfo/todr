@@ -57,10 +57,8 @@ impl Todr {
 
     /// Executes the main process loop.
     pub fn process_command_loop(&mut self) {
-
         // If loading failed, that's fine, just ignore it.
-        let _ = self .readline_editor
-                    .load_history(&self.history_file);
+        let _ = self.readline_editor.load_history(&self.history_file);
 
         loop {
             // Handle graceful exit request.

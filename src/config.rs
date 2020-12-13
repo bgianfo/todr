@@ -1,9 +1,7 @@
 //! This module implements the todr configuration logic.
 use std::env;
 
-
-pub enum Configuration { }
-
+pub enum Configuration {}
 
 impl Configuration {
     /// Obtain Todoist authentication token.

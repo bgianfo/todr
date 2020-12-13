@@ -6,9 +6,9 @@ use std::collections::HashMap;
 use reqwest;
 
 // Use our internal types module.
+use config::Configuration;
 use renderer;
 use types;
-use config::Configuration;
 
 // Endpoint for REST communication with the Todoist.
 static TODOIST_API: &'static str = "https://todoist.com/API/v7/sync";
@@ -43,7 +43,9 @@ fn to_resource_type(resource_type: &TodrResourceType) -> String {
     format!("[\"{}\"]", &resource)
 }
 
-fn execute_request(resource_type: &TodrResourceType) -> Result<reqwest::blocking::Response, reqwest::Error> {
+fn execute_request(
+    resource_type: &TodrResourceType,
+) -> Result<reqwest::blocking::Response, reqwest::Error> {
     // Fetch the token from the users environment.
     let auth_token = Configuration::api_token();
 
