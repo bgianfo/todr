@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: cargo
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+  open-pull-requests-limit: 10
+  reviewers:
+  - bgianfo
+  ignore:
+  - dependency-name: reqwest
+    versions:
+    - 0.11.1
